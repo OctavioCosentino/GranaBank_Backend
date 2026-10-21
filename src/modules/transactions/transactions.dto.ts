@@ -29,8 +29,30 @@ export const transactionQuerySchema = z.object({
       const parsed = val ? parseInt(val, 10) : 15;
       return isNaN(parsed) || parsed < 1 ? 15 : parsed;
     }),
-  search: z.string().optional(),
-  type: z.string().optional(),
+  search: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (!val || val === 'undefined' || val === 'null' || !val.trim()) {
+        return undefined;
+      }
+      return val.trim();
+    }),
+  type: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (
+        !val ||
+        val === 'undefined' ||
+        val === 'null' ||
+        val.toUpperCase() === 'ALL' ||
+        !val.trim()
+      ) {
+        return undefined;
+      }
+      return val.trim().toUpperCase();
+    }),
 });
 
 export type TransactionQueryDTO = z.infer<typeof transactionQuerySchema>;

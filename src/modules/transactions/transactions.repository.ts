@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '../../config/supabase';
 import { Transaction, Database } from '../../types/database.types';
+import { BadRequestError } from '../../errors/app.error';
 
 type TransactionInsert = Database['public']['Tables']['transactions']['Insert'];
 
@@ -24,13 +25,23 @@ export class TransactionsRepository {
       .select('*', { count: 'exact' })
       .eq('user_id', userId);
 
-    // Filter by type if provided and not "ALL"
-    if (options.type && options.type.toUpperCase() !== 'ALL') {
+    // Filter by type if provided and not "ALL", "undefined" or "null"
+    if (
+      options.type &&
+      options.type !== 'ALL' &&
+      options.type !== 'undefined' &&
+      options.type !== 'null'
+    ) {
       query = query.eq('type', options.type);
     }
 
     // Case-insensitive partial search in the transaction title/name (ILIKE %search%)
-    if (options.search && options.search.trim() !== '') {
+    if (
+      options.search &&
+      options.search !== 'undefined' &&
+      options.search !== 'null' &&
+      options.search.trim() !== ''
+    ) {
       query = query.ilike('name', `%${options.search.trim()}%`);
     }
 
@@ -40,7 +51,8 @@ export class TransactionsRepository {
       .range(offset, offset + limit - 1);
 
     if (error) {
-      throw error;
+      console.error('Supabase Query Error in findByUserId:', error);
+      throw new BadRequestError(error.message, error);
     }
 
     return {
@@ -58,7 +70,8 @@ export class TransactionsRepository {
       .maybeSingle();
 
     if (error) {
-      throw error;
+      console.error('Supabase Query Error in findByIdAndUserId:', error);
+      throw new BadRequestError(error.message, error);
     }
 
     return data;
@@ -72,7 +85,8 @@ export class TransactionsRepository {
       .single();
 
     if (error) {
-      throw error;
+      console.error('Supabase Query Error in create transaction:', error);
+      throw new BadRequestError(error.message, error);
     }
 
     return data;

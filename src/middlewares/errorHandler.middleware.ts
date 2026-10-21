@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
-import { AppError } from '../errors/app.error';
-import { env } from '../config/env';
+import { Request, Response, NextFunction } from "express";
+import { AppError } from "../errors/app.error";
+import { env } from "../config/env";
 
 export const errorHandler = (
-  err: Error | AppError,
+  err: any,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
@@ -20,16 +20,19 @@ export const errorHandler = (
     return;
   }
 
-  // Handle unexpected unhandled errors
-  console.error('🔥 Unexpected Server Error:', err);
+  // Handle unexpected unhandled errors (including Supabase PostgrestError)
+  const message = err?.message || "Internal Server Error";
+  const details = err?.details || err?.hint || undefined;
+  console.error("Server Error Handler caught:", message, details || "", err);
 
   res.status(500).json({
     success: false,
     error: {
-      message: 'Internal Server Error',
+      message:
+        env.NODE_ENV === "development" ? message : "Internal Server Error",
       statusCode: 500,
-      ...(env.NODE_ENV === 'development' ? { stack: err.stack } : {}),
+      details,
+      ...(env.NODE_ENV === "development" ? { stack: err?.stack } : {}),
     },
   });
 };
-
