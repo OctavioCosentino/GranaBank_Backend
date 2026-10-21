@@ -146,6 +146,10 @@ El backend está configurado para reflejar las tablas de la base de datos Supaba
 - `SUPABASE_ANON_KEY=clave_publica_anon_de_supabase`
 - `SUPABASE_SERVICE_ROLE_KEY=clave_privada_service_role_de_supabase`
 
+> **Configuración de `CORS_ORIGIN` (Local vs Producción en Vercel)**:
+> - **Desarrollo local**: Si vas a recrear o ejecutar el frontend localmente, configura `CORS_ORIGIN=http://localhost:3000` (o el puerto de tu cliente como `http://localhost:5173`, o `*`) para habilitar la comunicación entre tu navegador y el backend sin bloqueos de CORS.
+> - **Producción (Vercel)**: Define la URL pública asignada por Vercel a tu frontend (ej. `https://tu-front.vercel.app`). También se pueden listar múltiples dominios separados por coma (`http://localhost:3000,https://tu-front.vercel.app`).
+
 > **Validación Estricta con Zod al Iniciar**:
 >
 > - Las variables de entorno son parseadas y validadas estrictamente con un esquema de **Zod** (`src/config/env.ts`).
