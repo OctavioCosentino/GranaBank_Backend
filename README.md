@@ -4,6 +4,28 @@ Backend modular, escalable y robusto desarrollado con **Node.js**, **Express**, 
 
 ---
 
+## Índice
+
+- [Arquitectura del Proyecto](#arquitectura-del-proyecto)
+- [Flujo de cada Endpoint](#flujo-de-cada-endpoint)
+  - [Ventajas de la Arquitectura en Capas Modular (Clean N-Tier)](#ventajas-de-la-arquitectura-en-capas-modular-clean-n-tier)
+- [Esquema de Base de Datos (Supabase)](#esquema-de-base-de-datos-supabase)
+  - [1. profiles](#1-profiles)
+  - [2. cards](#2-cards)
+  - [3. transactions](#3-transactions)
+- [Variables de Entorno](#variables-de-entorno)
+- [Scripts Disponibles](#scripts-disponibles)
+- [Endpoints de la API](#endpoints-de-la-api)
+  - [Documentación Swagger UI (/doc)](#documentación-swagger-ui-doc)
+  - [Health Check](#health-check)
+  - [Autenticación (/api/v1/auth)](#autenticación-apiv1auth)
+  - [Perfiles (/api/v1/profiles)](#perfiles-apiv1profiles)
+  - [Tarjetas (/api/v1/cards)](#tarjetas-apiv1cards)
+  - [Transacciones (/api/v1/transactions)](#transacciones-apiv1transactions)
+- [Guía para Crear Futuros Módulos](#guía-para-crear-futuros-módulos)
+
+---
+
 ## Arquitectura del Proyecto
 
 El proyecto sigue una arquitectura en capas modular (Clean N-Tier Layered Architecture). Cada módulo (auth, profiles, cards, transactions) y cualquier módulo futuro a incorporar sigue estrictamente la separación de responsabilidades:
