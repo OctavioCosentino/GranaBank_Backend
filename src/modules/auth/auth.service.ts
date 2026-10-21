@@ -1,15 +1,20 @@
-import { supabase, supabaseAdmin } from '../../config/supabase';
-import { BadRequestError, UnauthorizedError } from '../../errors/app.error';
-import { SignUpDTO, SignInDTO } from './auth.dto';
-import { authRepository, AuthRepository } from './auth.repository';
+import { supabase, supabaseAdmin } from "../../config/supabase";
+import { BadRequestError, UnauthorizedError } from "../../errors/app.error";
+import { SignUpDTO, SignInDTO } from "./auth.dto";
+import { authRepository, AuthRepository } from "./auth.repository";
 
+/**
+ * Handles business logic for user authentication via Supabase Auth and Profiles table.
+ */
 export class AuthService {
   constructor(private readonly repository: AuthRepository = authRepository) {}
 
+  /**
+   * Registers a user in Supabase Auth and creates their profile.
+   */
   async signUp(dto: SignUpDTO) {
     const { email, password, name } = dto;
 
-    // Register user in Supabase Auth
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -25,10 +30,9 @@ export class AuthService {
     }
 
     if (!data.user) {
-      throw new BadRequestError('User registration failed');
+      throw new BadRequestError("User registration failed");
     }
 
-    // Ensure profile entry in public.profiles table
     const profile = await this.repository.createProfile({
       id: data.user.id,
       name,
@@ -41,6 +45,9 @@ export class AuthService {
     };
   }
 
+  /**
+   * Authenticates user with credentials and returns tokens and profile.
+   */
   async signIn(dto: SignInDTO) {
     const { email, password } = dto;
 
@@ -50,16 +57,18 @@ export class AuthService {
     });
 
     if (error || !data.user || !data.session) {
-      throw new UnauthorizedError(error?.message || 'Invalid email or password');
+      throw new UnauthorizedError(
+        error?.message || "Invalid email or password",
+      );
     }
 
-    // Retrieve corresponding profile
     let profile = await this.repository.getProfileById(data.user.id);
 
-    // If profile didn't exist yet, auto-create it from metadata or fallback
     if (!profile) {
       const fallbackName =
-        data.user.user_metadata?.name || data.user.email?.split('@')[0] || 'User';
+        data.user.user_metadata?.name ||
+        data.user.email?.split("@")[0] ||
+        "User";
       profile = await this.repository.createProfile({
         id: data.user.id,
         name: fallbackName,
@@ -78,13 +87,18 @@ export class AuthService {
     };
   }
 
+  /**
+   * Refreshes user access token using a refresh token.
+   */
   async refreshToken(refreshToken: string) {
     const { data, error } = await supabase.auth.refreshSession({
       refresh_token: refreshToken,
     });
 
     if (error || !data.session) {
-      throw new UnauthorizedError(error?.message || 'Invalid or expired refresh token');
+      throw new UnauthorizedError(
+        error?.message || "Invalid or expired refresh token",
+      );
     }
 
     return {
@@ -98,19 +112,25 @@ export class AuthService {
     };
   }
 
+  /**
+   * Signs out the user session.
+   */
   async signOut(accessToken?: string) {
     if (accessToken) {
-      // Supabase signOut can invalidate current user scope
       await supabase.auth.signOut();
     }
     return { success: true };
   }
 
+  /**
+   * Fetches the current authenticated user and linked profile.
+   */
   async getMe(userId: string) {
-    const { data: userResp, error } = await supabaseAdmin.auth.admin.getUserById(userId);
+    const { data: userResp, error } =
+      await supabaseAdmin.auth.admin.getUserById(userId);
 
     if (error || !userResp.user) {
-      throw new UnauthorizedError('User not found');
+      throw new UnauthorizedError("User not found");
     }
 
     const profile = await this.repository.getProfileById(userId);
@@ -123,4 +143,3 @@ export class AuthService {
 }
 
 export const authService = new AuthService();
-

@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type TransactionType = 'INCOME' | 'EXPENSE' | 'TRANSFER' | string;
+export type TransactionType = "INCOME" | "EXPENSE" | "TRANSFER" | string;
 
 export type Profile = {
   id: string;
@@ -47,15 +47,17 @@ export type Database = {
           created_at?: string;
           name?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: string;
-            columns: string[];
-            isOneToOne?: boolean;
-            referencedRelation: string;
-            referencedColumns: string[];
-          }
-        ] | [];
+        Relationships:
+          | [
+              {
+                foreignKeyName: string;
+                columns: string[];
+                isOneToOne?: boolean;
+                referencedRelation: string;
+                referencedColumns: string[];
+              },
+            ]
+          | [];
       };
       cards: {
         Row: Card;
@@ -75,15 +77,17 @@ export type Database = {
           expiration_date?: string;
           last_four?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: string;
-            columns: string[];
-            isOneToOne?: boolean;
-            referencedRelation: string;
-            referencedColumns: string[];
-          }
-        ] | [];
+        Relationships:
+          | [
+              {
+                foreignKeyName: string;
+                columns: string[];
+                isOneToOne?: boolean;
+                referencedRelation: string;
+                referencedColumns: string[];
+              },
+            ]
+          | [];
       };
       transactions: {
         Row: Transaction;
@@ -103,15 +107,17 @@ export type Database = {
           amount?: number;
           user_id?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: string;
-            columns: string[];
-            isOneToOne?: boolean;
-            referencedRelation: string;
-            referencedColumns: string[];
-          }
-        ] | [];
+        Relationships:
+          | [
+              {
+                foreignKeyName: string;
+                columns: string[];
+                isOneToOne?: boolean;
+                referencedRelation: string;
+                referencedColumns: string[];
+              },
+            ]
+          | [];
       };
     };
     Views: Record<string, never>;
@@ -120,4 +126,3 @@ export type Database = {
     CompositeTypes: Record<string, never>;
   };
 };
-

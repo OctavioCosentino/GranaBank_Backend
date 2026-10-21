@@ -1,33 +1,30 @@
-import { Router } from 'express';
-import { cardsController } from './cards.controller';
-import { authenticate } from '../../middlewares/auth.middleware';
-import { validate } from '../../middlewares/validate.middleware';
-import { createCardSchema, cardIdParamSchema } from './cards.dto';
+import { Router } from "express";
+import { cardsController } from "./cards.controller";
+import { authenticate } from "../../middlewares/auth.middleware";
+import { validate } from "../../middlewares/validate.middleware";
+import { createCardSchema, cardIdParamSchema } from "./cards.dto";
 
 const router = Router();
 
-// All card routes require authentication
+// Protect all card endpoints with JWT authentication
 router.use(authenticate);
 
-router.get('/', cardsController.getUserCards);
-
+// Card endpoints
+router.get("/", cardsController.getUserCards);
 router.post(
-  '/',
+  "/",
   validate({ body: createCardSchema }),
-  cardsController.createCard
+  cardsController.createCard,
 );
-
 router.get(
-  '/:id',
+  "/:id",
   validate({ params: cardIdParamSchema }),
-  cardsController.getCardById
+  cardsController.getCardById,
 );
-
 router.delete(
-  '/:id',
+  "/:id",
   validate({ params: cardIdParamSchema }),
-  cardsController.deleteCard
+  cardsController.deleteCard,
 );
 
 export const cardRoutes = router;
-

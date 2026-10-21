@@ -1,15 +1,17 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createTransactionSchema = z
   .object({
     name: z.string().optional(),
     title: z.string().optional(),
-    type: z.string().min(1, 'Transaction type is required'),
-    amount: z.number().int('Amount must be an integer (e.g. in cents or base units)'),
+    type: z.string().min(1, "Transaction type is required"),
+    amount: z
+      .number()
+      .int("Amount must be an integer (e.g. in cents or base units)"),
   })
   .refine((data) => !!(data.name || data.title), {
-    message: 'Either title or name is required',
-    path: ['title'],
+    message: "Either title or name is required",
+    path: ["title"],
   });
 
 export type CreateTransactionDTO = z.infer<typeof createTransactionSchema>;
@@ -33,7 +35,7 @@ export const transactionQuerySchema = z.object({
     .string()
     .optional()
     .transform((val) => {
-      if (!val || val === 'undefined' || val === 'null' || !val.trim()) {
+      if (!val || val === "undefined" || val === "null" || !val.trim()) {
         return undefined;
       }
       return val.trim();
@@ -44,9 +46,9 @@ export const transactionQuerySchema = z.object({
     .transform((val) => {
       if (
         !val ||
-        val === 'undefined' ||
-        val === 'null' ||
-        val.toUpperCase() === 'ALL' ||
+        val === "undefined" ||
+        val === "null" ||
+        val.toUpperCase() === "ALL" ||
         !val.trim()
       ) {
         return undefined;
@@ -58,7 +60,7 @@ export const transactionQuerySchema = z.object({
 export type TransactionQueryDTO = z.infer<typeof transactionQuerySchema>;
 
 export const transactionIdParamSchema = z.object({
-  id: z.string().uuid('Invalid transaction ID format, must be UUID'),
+  id: z.string().uuid("Invalid transaction ID format, must be UUID"),
 });
 
 export type TransactionIdParamDTO = z.infer<typeof transactionIdParamSchema>;

@@ -12,7 +12,9 @@ const server = app.listen(env.PORT, () => {
   console.log("====================================================");
 });
 
-// Graceful shutdown handling
+/**
+ * Handles graceful shutdown on SIGTERM / SIGINT signals.
+ */
 const gracefulShutdown = (signal: string) => {
   console.log(`\nReceived ${signal}. Shutting down gracefully...`);
   server.close(() => {
@@ -20,7 +22,7 @@ const gracefulShutdown = (signal: string) => {
     process.exit(0);
   });
 
-  // Force close if taking too long
+  // Force close after 10s if hanging
   setTimeout(() => {
     console.error(
       "Could not close connections in time, forcefully shutting down",

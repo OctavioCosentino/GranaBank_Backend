@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response } from "express";
 
 export interface PaginationMeta {
   page: number;
@@ -21,7 +21,7 @@ export const sendSuccess = <T>(
   data?: T,
   statusCode: number = 200,
   message?: string,
-  pagination?: PaginationMeta
+  pagination?: PaginationMeta,
 ): Response => {
   const body: ApiResponse<T> = {
     success: true,

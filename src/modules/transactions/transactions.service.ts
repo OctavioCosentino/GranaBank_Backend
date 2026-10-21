@@ -1,31 +1,40 @@
 import {
   TransactionsRepository,
   transactionsRepository,
-} from './transactions.repository';
-import { CreateTransactionDTO, TransactionQueryDTO } from './transactions.dto';
-import { NotFoundError } from '../../errors/app.error';
+} from "./transactions.repository";
+import { CreateTransactionDTO, TransactionQueryDTO } from "./transactions.dto";
+import { NotFoundError } from "../../errors/app.error";
 
+/**
+ * Returns a human-friendly subtitle according to transaction type.
+ */
 const getSubtitleForType = (type: string): string => {
   switch (type?.toUpperCase()) {
-    case 'CASH_IN':
-      return 'Pago recibido';
-    case 'CASH_OUT':
-      return 'Pago enviado';
-    case 'SUS':
-    case 'SUBSCRIPTION':
-      return 'Suscripción';
-    case 'TRANSFER':
-      return 'Transferencia';
+    case "CASH_IN":
+      return "Pago recibido";
+    case "CASH_OUT":
+      return "Pago enviado";
+    case "SUS":
+    case "SUBSCRIPTION":
+      return "Suscripción";
+    case "TRANSFER":
+      return "Transferencia";
     default:
-      return 'Movimiento';
+      return "Movimiento";
   }
 };
 
+/**
+ * Handles business logic for transactions, filtering, and pagination.
+ */
 export class TransactionsService {
   constructor(
-    private readonly repository: TransactionsRepository = transactionsRepository
+    private readonly repository: TransactionsRepository = transactionsRepository,
   ) {}
 
+  /**
+   * Retrieves paginated, filtered user transactions.
+   */
   async getUserTransactions(userId: string, query: TransactionQueryDTO) {
     const page = query.page || 1;
     const limit = query.limit || 15;
@@ -62,6 +71,9 @@ export class TransactionsService {
     };
   }
 
+  /**
+   * Retrieves a single transaction by ID and user ID.
+   */
   async getTransactionById(id: string, userId: string) {
     const transaction = await this.repository.findByIdAndUserId(id, userId);
     if (!transaction) {
@@ -79,8 +91,11 @@ export class TransactionsService {
     };
   }
 
+  /**
+   * Creates a new transaction record for a user.
+   */
   async createTransaction(userId: string, dto: CreateTransactionDTO) {
-    const title = dto.title || dto.name || 'Sin título';
+    const title = dto.title || dto.name || "Sin título";
     const transaction = await this.repository.create({
       user_id: userId,
       name: title,

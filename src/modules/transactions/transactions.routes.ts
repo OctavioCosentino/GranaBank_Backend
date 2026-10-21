@@ -1,35 +1,33 @@
-import { Router } from 'express';
-import { transactionsController } from './transactions.controller';
-import { authenticate } from '../../middlewares/auth.middleware';
-import { validate } from '../../middlewares/validate.middleware';
+import { Router } from "express";
+import { transactionsController } from "./transactions.controller";
+import { authenticate } from "../../middlewares/auth.middleware";
+import { validate } from "../../middlewares/validate.middleware";
 import {
   createTransactionSchema,
   transactionQuerySchema,
   transactionIdParamSchema,
-} from './transactions.dto';
+} from "./transactions.dto";
 
 const router = Router();
 
-// All transaction routes require authentication
+// Protect all transaction endpoints with JWT authentication
 router.use(authenticate);
 
+// Transaction endpoints
 router.get(
-  '/',
+  "/",
   validate({ query: transactionQuerySchema }),
-  transactionsController.getUserTransactions
+  transactionsController.getUserTransactions,
 );
-
 router.post(
-  '/',
+  "/",
   validate({ body: createTransactionSchema }),
-  transactionsController.createTransaction
+  transactionsController.createTransaction,
 );
-
 router.get(
-  '/:id',
+  "/:id",
   validate({ params: transactionIdParamSchema }),
-  transactionsController.getTransactionById
+  transactionsController.getTransactionById,
 );
 
 export const transactionRoutes = router;
-

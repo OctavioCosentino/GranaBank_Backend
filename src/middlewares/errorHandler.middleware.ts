@@ -2,6 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/app.error";
 import { env } from "../config/env";
 
+/**
+ * Global error handler middleware.
+ * Formats custom AppErrors and unexpected exceptions into a standard JSON payload.
+ */
 export const errorHandler = (
   err: any,
   _req: Request,

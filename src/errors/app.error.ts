@@ -7,7 +7,7 @@ export class AppError extends Error {
     message: string,
     statusCode: number = 500,
     details?: unknown,
-    isOperational: boolean = true
+    isOperational: boolean = true,
   ) {
     super(message);
     this.statusCode = statusCode;
@@ -19,38 +19,37 @@ export class AppError extends Error {
 }
 
 export class BadRequestError extends AppError {
-  constructor(message: string = 'Bad Request', details?: unknown) {
+  constructor(message: string = "Bad Request", details?: unknown) {
     super(message, 400, details);
   }
 }
 
 export class UnauthorizedError extends AppError {
-  constructor(message: string = 'Unauthorized', details?: unknown) {
+  constructor(message: string = "Unauthorized", details?: unknown) {
     super(message, 401, details);
   }
 }
 
 export class ForbiddenError extends AppError {
-  constructor(message: string = 'Forbidden', details?: unknown) {
+  constructor(message: string = "Forbidden", details?: unknown) {
     super(message, 403, details);
   }
 }
 
 export class NotFoundError extends AppError {
-  constructor(message: string = 'Resource Not Found', details?: unknown) {
+  constructor(message: string = "Resource Not Found", details?: unknown) {
     super(message, 404, details);
   }
 }
 
 export class ConflictError extends AppError {
-  constructor(message: string = 'Conflict', details?: unknown) {
+  constructor(message: string = "Conflict", details?: unknown) {
     super(message, 409, details);
   }
 }
 
 export class InternalServerError extends AppError {
-  constructor(message: string = 'Internal Server Error', details?: unknown) {
+  constructor(message: string = "Internal Server Error", details?: unknown) {
     super(message, 500, details);
   }
 }
-

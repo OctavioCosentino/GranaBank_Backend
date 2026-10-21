@@ -1,20 +1,20 @@
-import { Router } from 'express';
-import { profilesController } from './profiles.controller';
-import { authenticate } from '../../middlewares/auth.middleware';
-import { validate } from '../../middlewares/validate.middleware';
-import { updateProfileSchema } from './profiles.dto';
+import { Router } from "express";
+import { profilesController } from "./profiles.controller";
+import { authenticate } from "../../middlewares/auth.middleware";
+import { validate } from "../../middlewares/validate.middleware";
+import { updateProfileSchema } from "./profiles.dto";
 
 const router = Router();
 
-// All profile routes require authentication
+// Protect all profile endpoints with JWT authentication
 router.use(authenticate);
 
-router.get('/me', profilesController.getMyProfile);
+// Profile endpoints
+router.get("/me", profilesController.getMyProfile);
 router.patch(
-  '/me',
+  "/me",
   validate({ body: updateProfileSchema }),
-  profilesController.updateMyProfile
+  profilesController.updateMyProfile,
 );
 
 export const profileRoutes = router;
-

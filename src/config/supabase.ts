@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
-import { env } from './env';
-import { Database } from '../types/database.types';
+import { createClient } from "@supabase/supabase-js";
+import { env } from "./env";
+import { Database } from "../types/database.types";
 
 /**
  * Standard Supabase client using the public anon key.
@@ -14,7 +14,7 @@ export const supabase = createClient<Database>(
       persistSession: false,
       autoRefreshToken: false,
     },
-  }
+  },
 );
 
 /**
@@ -30,7 +30,7 @@ export const supabaseAdmin = createClient<Database>(
       persistSession: false,
       autoRefreshToken: false,
     },
-  }
+  },
 );
 
 /**
@@ -50,4 +50,3 @@ export const createScopedSupabaseClient = (accessToken: string) => {
     },
   });
 };
-
