@@ -151,6 +151,10 @@ El backend está configurado para reflejar las tablas de la base de datos Supaba
 
 La API se encuentra bajo el prefijo `/api/v1`.
 
+### Documentación Swagger UI (`/doc`)
+
+- `GET /doc`: Interfaz interactiva de Swagger UI cargada desde la especificación OpenAPI (`swagger.yaml`). Solo está activa y accesible cuando `NODE_ENV=development`. En producción retorna 404 por seguridad.
+
 ### Health Check
 
 - `GET /api/v1/health`: Estado de salud de la API.

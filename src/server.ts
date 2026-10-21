@@ -9,6 +9,9 @@ const server = app.listen(env.PORT, () => {
   console.log(`Environment: ${env.NODE_ENV}`);
   console.log(`Base URL: http://localhost:${env.PORT}/api/v1`);
   console.log(`Health check: http://localhost:${env.PORT}/api/v1/health`);
+  if (env.NODE_ENV === "development") {
+    console.log(`Swagger UI: http://localhost:${env.PORT}/doc`);
+  }
   console.log("====================================================");
 });
 
@@ -22,7 +25,6 @@ const gracefulShutdown = (signal: string) => {
     process.exit(0);
   });
 
-  // Force close after 10s if hanging
   setTimeout(() => {
     console.error(
       "Could not close connections in time, forcefully shutting down",

@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  title: GranaBank API Documentation
+  description: Documentación de los endpoints para el backend en Node.js y TypeScript.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Servidor de Desarrollo
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+    description: Autenticación de usuarios
+  - name: Profiles
+    description: Gestión de perfiles de usuario
+  - name: Cards
+    description: Gestión de tarjetas
+  - name: Transactions
+    description: Gestión de transacciones
+paths:
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Registra un nuevo usuario en Supabase Auth y crea su perfil
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - name
+              properties:
+                email:
+                  type: string
+                  example: usuario@ejemplo.com
+                password:
+                  type: string
+                  example: password123
+                name:
+                  type: string
+                  example: Octavio Cosentino
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Autentica credenciales en Supabase y devuelve tokens
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: usuario@ejemplo.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Login exitoso, retorna tokens y perfil
+
+  /api/v1/auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Renueva el access_token usando el refresh_token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  example: <refresh_token>
+      responses:
+        '200':
+          description: Token renovado exitosamente
+
+  /api/v1/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Cierra la sesión activa
+      responses:
+        '200':
+          description: Sesión cerrada exitosamente
+
+  /api/v1/auth/me:
+    get:
+      tags:
+        - Auth
+      summary: Retorna los datos de autenticación y perfil del usuario autenticado
+      responses:
+        '200':
+          description: Datos del usuario autenticado
+
+  /api/v1/profiles/me:
+    get:
+      tags:
+        - Profiles
+      summary: Obtiene el perfil del usuario autenticado
+      responses:
+        '200':
+          description: Perfil del usuario
+    patch:
+      tags:
+        - Profiles
+      summary: Actualiza el nombre del perfil
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Nuevo Nombre
+      responses:
+        '200':
+          description: Perfil actualizado exitosamente
+
+  /api/v1/cards:
+    get:
+      tags:
+        - Cards
+      summary: Lista todas las tarjetas del usuario autenticado
+      responses:
+        '200':
+          description: Lista de tarjetas
+    post:
+      tags:
+        - Cards
+      summary: Registra una nueva tarjeta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cardholder:
+                  type: string
+                  example: OCTAVIO COSENTINO
+                expiration_date:
+                  type: string
+                  example: "12/28"
+                last_four:
+                  type: string
+                  example: "4242"
+      responses:
+        '201':
+          description: Tarjeta creada exitosamente
+
+  /api/v1/cards/{id}:
+    get:
+      tags:
+        - Cards
+      summary: Obtiene el detalle de una tarjeta por UUID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalle de la tarjeta
+    delete:
+      tags:
+        - Cards
+      summary: Elimina una tarjeta
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Tarjeta eliminada exitosamente
+
+  /api/v1/transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Lista paginada para scroll infinito con filtros
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número de página
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 15
+          description: Cantidad de items por página
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Búsqueda parcial con ILIKE
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [SUS, CASH_IN, CASH_OUT, ALL]
+          description: Filtro por tipo de transacción
+      responses:
+        '200':
+          description: Lista de transacciones y datos de paginación
+    post:
+      tags:
+        - Transactions
+      summary: Registra una nueva transacción
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Supermercado
+                type:
+                  type: string
+                  enum: [SUS, CASH_IN, CASH_OUT]
+                  example: CASH_OUT
+                amount:
+                  type: integer
+                  example: 15000
+      responses:
+        '201':
+          description: Transacción registrada exitosamente
+
+  /api/v1/transactions/{id}:
+    get:
+      tags:
+        - Transactions
+      summary: Obtiene el detalle de una transacción por UUID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalle de la transacción
